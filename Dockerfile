@@ -1,6 +1,7 @@
 ARG BASE_IMAGE=ubuntu:22.04
 FROM --platform=${BUILDPLATFORM} ${BASE_IMAGE} as builder
 
+ADD install-tools.sh .
 RUN chmod +x install-tools.sh && ./install-tools.sh 
 
 FROM alpine:3
