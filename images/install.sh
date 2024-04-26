@@ -24,12 +24,20 @@ load_module() {
     printf "[Step 3]Try to load the kernel module."
     # try to load the module, exit 0 with no error.
     # if any error happened, check the kernel version is  
+    if modprobe smc 2>&1 ; then
+        echo "[Step 3]Success to load the kernel module, retuning."
+        return
+    fi
+
     KERNEL_VERSION=$(uname -r)
     MATCHED=$(grep "${KERNEL_VERSION}" <<< "$(ls /host/modules)" 2>&1)
     if [ -e "${MATCHED}/smc.ko" ]; then
         modprobe -r smc.ko
         insmod "${MATCHED}"/smc.ko
         modprobe "${MATCHED}"/smc.ko
+    else
+        echo "[Step 3] Failed to load the kernel module and no compile module found, retuning."
+        exit 1
     fi
     printf "[Step 3] Done."
 }
@@ -40,9 +48,13 @@ coyp_files() {
         printf "[Step 2] libsmc-preload.so has found on host, skip copy."
         return
     fi
-    cp /host/usr/lib/libsmc-preload.so /usr/lib/
+
+    OS=$(grep -E '^ID=(.*)' /etc/os-release | awk -F '=' '{print $2}')
+    VERSION_ID=$(grep -E '^VERSION_ID=(.*)' /etc/os-release | awk -F '=' '{print $2}')
+
+    cp /host/"${OS}${VERSION_ID}"/usr/lib/libsmc-preload.so /usr/lib/
     ln -s /usr/lib/libsmc-preload.so /usr/lib/libsmc-preload.so.1
-    cp /host/usr/lib/libsmc-preload.so /usr/lib64/
+    cp /host/"${OS}${VERSION_ID}"/usr/lib/libsmc-preload.so /usr/lib64/
     ln -s /usr/lib64/libsmc-preload.so /usr/lib64/libsmc-preload.so.1
     printf "[Step 2] Done."
 }

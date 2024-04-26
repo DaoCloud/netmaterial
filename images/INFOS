@@ -1,0 +1,6 @@
+Supported_OS:
+- ubuntu18.04
+- ubuntu20.04
+- ubuntu22.04
+- centos8
+- centos9
