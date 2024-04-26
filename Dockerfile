@@ -9,7 +9,7 @@ RUN mkdir -p /host/usr/bin && mkdir -p /host/usr/lib
 WORKDIR /host/
 COPY --from=builder /host/usr/bin /host/usr/bin
 COPY --from=builder /host/usr/lib /host/usr/lib
-ADD modules .
-ADD install.sh .
-RUN chmod +x install.sh
-ENTRYPOINT [./install.sh]
+ADD modules /host/modules
+ADD install.sh /host/modules
+RUN chmod +x /host/install.sh
+ENTRYPOINT [./host/install.sh]
