@@ -1,4 +1,4 @@
-name: Auto Build Image
+name: Call Build Image
 
 env:
   ONLINE_REGISTER: ghcr.io
@@ -55,6 +55,12 @@ jobs:
           echo ::set-output name=commit_version::${GIT_COMMIT_VERSION}
           echo ::set-output name=commit_time::${GIT_COMMIT_TIME}
 
+      - name: Generate Dockerfile
+        id: dockerfile
+        continue-on-error: false
+        run: |
+          make update_dockerfile
+          
       # ========== image build
       # build normal image
       - name: Image Build
