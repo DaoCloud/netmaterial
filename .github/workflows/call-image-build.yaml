@@ -52,8 +52,9 @@ jobs:
         run: |
           GIT_COMMIT_VERSION=$( git show -s --format='format:%H')
           GIT_COMMIT_TIME=$( git show -s --format='format:%aI')
-          echo ::set-output name=commit_version::${GIT_COMMIT_VERSION}
-          echo ::set-output name=commit_time::${GIT_COMMIT_TIME}
+          echo "commit_version=${GIT_COMMIT_VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "commit_time=${GIT_COMMIT_TIME}" >> "${GITHUB_OUTPUT}"
+          echo "repo=${GITHUB_REPOSITORY@L}" >> "${GITHUB_OUTPUT}"
 
       - name: Generate Dockerfile
         id: dockerfile
@@ -79,7 +80,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
-            ${{ env.ONLINE_REGISTER }}/${{ github.repository }}:${{ inputs.tag }}
+            ${{ env.ONLINE_REGISTER }}/${{ steps.arg.outputs.repo }}:${{ inputs.tag }}
           build-args: |
             GIT_COMMIT_VERSION=${{ steps.arg.outputs.commit_version }}
             GIT_COMMIT_TIME=${{ steps.arg.outputs.commit_time }}
