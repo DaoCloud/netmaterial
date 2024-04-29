@@ -27,14 +27,19 @@ load_module() {
     fi
 
     KERNEL_VERSION=$(uname -r)
-    OFED_VERSION=$(sh /usr/bin/ofed_info -s | awk -F 'MLNX_OFED_LINUX-'  '{print $2}' | tr -d :)
+    if [ ! -e "/host/usr/bin/ofed_info" ]; then 
+        echo "[Step 3] ofed driver has yet not installed, can't load compiled module"
+        exit 1
+    fi
+
+    OFED_VERSION=$(sh /host/usr/bin/ofed_info -s | awk -F 'MLNX_OFED_LINUX-'  '{print $2}' | tr -d :)
     echo "[Step 3] ofed driver ${OFED_VERSION} has installed, try to load compiled module."
     if [ -e "modules/${KERNEL_VERSION}/${OFED_VERSION}/smc.ko" ]; then
         modprobe -r smc
         insmod modules/${KERNEL_VERSION}/${OFED_VERSION}/smc.ko
         modprobe smc
     else
-        echo "[Step 3] No compile smc module found: can't load smc module. exit code 1."
+        echo "[Step 3] No compile smc module matched the kernel: can't load smc module. exit code 1."
         exit 1
     fi
     printf "[Step 3] Done.\n"
