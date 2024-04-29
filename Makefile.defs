@@ -1,0 +1,10 @@
+#----------build-image--------
+IMAGE_REGISTER ?= ghcr.io
+GIT_REPO ?= daocloud/netmaterial
+
+GIT_COMMIT_VERSION = $(shell git show -s --format='format:%H')
+GIT_COMMIT_TIME = $(shell git show -s --format='format:%aI')
+GIT_BRANCH = $(shell git branch --show-current)
+GIT_TAG ?= dev
+
+CONTAINER_RUNTIME ?= docker
