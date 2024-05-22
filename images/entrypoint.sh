@@ -47,13 +47,11 @@ coyp_files() {
         return
     fi
 
-    OS=$(grep -E '^ID=(.*)' /host/etc/os-release | awk -F '=' '{print $2}' | tr -d '.')
-    VERSION_ID=$(grep -E '^VERSION_ID=(.*)' /host/etc/os-release | awk -F '=' '{print $2}' | tr -d '.')
+    OS=$(grep -E '^ID=(.*)' /host/etc/os-release | awk -F '=' '{print $2}' | tr -d '.' | tr -d '"')
+    VERSION_ID=$(grep -E '^VERSION_ID=(.*)' /host/etc/os-release | awk -F '=' '{print $2}' | tr -d '.' | tr -d '"')
 
     cp /host/${OS}${VERSION_ID}/usr/lib/libsmc-preload.so /usr/lib/
-    ln -s /usr/lib/libsmc-preload.so /usr/lib/libsmc-preload.so.1
     cp /host/${OS}${VERSION_ID}/usr/lib/libsmc-preload.so /usr/lib64/
-    ln -s /usr/lib64/libsmc-preload.so /usr/lib64/libsmc-preload.so.1
     cp -f /host/${OS}${VERSION_ID}/usr/bin/smc* /usr/bin/
     printf "[Step 2] Done.\n"
 }
